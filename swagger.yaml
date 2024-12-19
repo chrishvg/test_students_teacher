@@ -1,0 +1,612 @@
+openapi: 3.0.0
+info:
+  title: Student and Note API
+  description: API para gestionar estudiantes y sus notas.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000/api
+    description: Servidor local
+
+paths:
+  /teachers:
+    get:
+      summary: Obtener lista de profesores
+      description: Retorna una lista paginada de profesores.
+      responses:
+        200:
+          description: Lista de profesores
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  current_page:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Teacher'
+                  total:
+                    type: integer
+                    example: 100
+
+    post:
+      summary: Crear un profesor
+      description: Agrega un nuevo profesor a la base de datos.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeacherCreate'
+      responses:
+        201:
+          description: Profesor creado con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Message:
+                    type: string
+                    example: Guardado con éxito
+                  data:
+                    $ref: '#/components/schemas/Teacher'
+
+  /teachers/{id}:
+    put:
+      summary: Actualizar un profesor
+      description: Actualiza los datos de un profesor existente.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del profesor
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeacherCreate'
+      responses:
+        200:
+          description: Profesor actualizado con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Message:
+                    type: string
+                    example: Actualizado con éxito
+                  data:
+                    $ref: '#/components/schemas/Teacher'
+
+    delete:
+      summary: Eliminar un profesor
+      description: Borra un profesor de la base de datos.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del profesor
+          schema:
+            type: string
+      responses:
+        200:
+          description: Profesor eliminado con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Message:
+                    type: string
+                    example: Borrado con éxito
+                  data:
+                    $ref: '#/components/schemas/Teacher'
+
+  /teachers/course/{course_id}:
+    get:
+      summary: Obtener profesores por curso
+      description: Retorna una lista de profesores asociados a un curso específico.
+      parameters:
+        - name: course_id
+          in: path
+          required: true
+          description: ID del curso
+          schema:
+            type: string
+      responses:
+        200:
+          description: Lista de profesores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Teacher'
+
+  /students:
+    get:
+      summary: Obtener lista de estudiantes
+      description: Retorna una lista paginada de estudiantes.
+      responses:
+        200:
+          description: Lista de estudiantes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  current_page:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Student'
+                  total:
+                    type: integer
+                    example: 100
+
+    post:
+      summary: Crear un estudiante
+      description: Agrega un nuevo estudiante a la base de datos.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentCreate'
+      responses:
+        201:
+          description: Estudiante creado con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Message:
+                    type: string
+                    example: Guardado con éxito
+                  data:
+                    $ref: '#/components/schemas/Student'
+
+  /students/{id}:
+    put:
+      summary: Actualizar un estudiante
+      description: Actualiza los datos de un estudiante existente.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del estudiante
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentCreate'
+      responses:
+        200:
+          description: Estudiante actualizado con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Message:
+                    type: string
+                    example: Actualizado con éxito
+                  data:
+                    $ref: '#/components/schemas/Student'
+
+    delete:
+      summary: Eliminar un estudiante
+      description: Borra un estudiante de la base de datos.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del estudiante
+          schema:
+            type: string
+      responses:
+        200:
+          description: Estudiante eliminado con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Message:
+                    type: string
+                    example: Borrado con éxito
+                  data:
+                    $ref: '#/components/schemas/Student'
+
+  /students/course/{course_id}:
+    get:
+      summary: Obtener estudiantes por curso
+      description: Retorna una lista de estudiantes asociados a un curso específico.
+      parameters:
+        - name: course_id
+          in: path
+          required: true
+          description: ID del curso
+          schema:
+            type: string
+      responses:
+        200:
+          description: Lista de estudiantes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+
+  /students/note/{note}:
+    get:
+      summary: Obtener estudiantes por nota
+      description: Retorna una lista de estudiantes que tienen una nota específica.
+      parameters:
+        - name: note
+          in: path
+          required: true
+          description: La nota para filtrar
+          schema:
+            type: string
+      responses:
+        200:
+          description: Lista de estudiantes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+  /courses:
+    get:
+      summary: Obtener lista de cursos
+      description: Retorna una lista paginada de cursos.
+      responses:
+        200:
+          description: Lista de cursos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  current_page:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Course'
+                  total:
+                    type: integer
+                    example: 100
+
+    post:
+      summary: Crear un curso
+      description: Agrega un nuevo curso a la base de datos.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseCreate'
+      responses:
+        201:
+          description: Curso creado con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Message:
+                    type: string
+                    example: Guardado con éxito
+                  data:
+                    $ref: '#/components/schemas/Course'
+
+  /courses/{id}:
+    put:
+      summary: Actualizar un curso
+      description: Actualiza los datos de un curso existente.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del curso
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseCreate'
+      responses:
+        200:
+          description: Curso actualizado con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Message:
+                    type: string
+                    example: Actualizado con éxito
+                  data:
+                    $ref: '#/components/schemas/Course'
+
+    delete:
+      summary: Eliminar un curso
+      description: Borra un curso de la base de datos.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del curso
+          schema:
+            type: string
+      responses:
+        200:
+          description: Curso eliminado con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Message:
+                    type: string
+                    example: Borrado con éxito
+                  data:
+                    $ref: '#/components/schemas/Course'
+  /notes:
+    get:
+      summary: Obtener lista de notas
+      description: Retorna una lista paginada de notas.
+      responses:
+        200:
+          description: Lista de notas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  current_page:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Note'
+                  total:
+                    type: integer
+                    example: 100
+
+    post:
+      summary: Crear una nota
+      description: Agrega una nueva nota a la base de datos.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteCreate'
+      responses:
+        201:
+          description: Nota creada con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Message:
+                    type: string
+                    example: Guardado con éxito
+                  data:
+                    $ref: '#/components/schemas/Note'
+
+  /notes/{id}:
+    put:
+      summary: Actualizar una nota
+      description: Actualiza los datos de una nota existente.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la nota
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteUpdate'
+      responses:
+        200:
+          description: Nota actualizada con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Message:
+                    type: string
+                    example: Actualizado con éxito
+                  data:
+                    $ref: '#/components/schemas/Note'
+
+    delete:
+      summary: Eliminar una nota
+      description: Borra una nota de la base de datos.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la nota
+          schema:
+            type: string
+      responses:
+        200:
+          description: Nota eliminada con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Message:
+                    type: string
+                    example: Borrado con éxito
+                  data:
+                    $ref: '#/components/schemas/Note'
+
+components:
+  schemas:
+    Teacher:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: John Doe
+        course_id:
+          type: integer
+          example: 101
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    TeacherCreate:
+      type: object
+      required:
+        - name
+        - course_id
+      properties:
+        name:
+          type: string
+          example: John Doe
+        course_id:
+          type: integer
+          example: 101
+
+    Student:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Jane Doe
+        course_id:
+          type: integer
+          example: 101
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    StudentCreate:
+      type: object
+      required:
+        - name
+        - course_id
+      properties:
+        name:
+          type: string
+          example: Jane Doe
+        course_id:
+          type: integer
+          example: 101
+
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Matemáticas
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CourseCreate:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: Matemáticas
+    Note:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        student_id:
+          type: integer
+          example: 101
+        course_id:
+          type: integer
+          example: 202
+        note:
+          type: string
+          example: "A"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    NoteCreate:
+      type: object
+      required:
+        - student_id
+        - course_id
+        - note
+      properties:
+        student_id:
+          type: integer
+          example: 101
+        course_id:
+          type: integer
+          example: 202
+        note:
+          type: string
+          example: "A"
+
+    NoteUpdate:
+      type: object
+      required:
+        - note
+      properties:
+        note:
+          type: string
+          example: "B+"
